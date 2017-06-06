@@ -1,4 +1,6 @@
-package Client.View;/**
+package Client.View;
+
+/**
  * Created by Michele Iessi on 20/05/2017.
  */
 

@@ -1,4 +1,4 @@
-package Matrices;
+package Matrices.FullDES;
 
 import java.lang.reflect.Field;
 
@@ -27,7 +27,7 @@ public class InitialFinalPermutation {
      * @param permutation String (initial o final)
      * @return initialPi o finalPi
      */
-    private static int[] getPermutation(String permutation) throws NoSuchFieldException, IllegalAccessException {
+    private int[] getPermutation(String permutation) throws NoSuchFieldException, IllegalAccessException {
 
         String attributeName = permutation + "Pi";
         Field f = InitialFinalPermutation.class.getDeclaredField(attributeName);
@@ -41,7 +41,7 @@ public class InitialFinalPermutation {
      * @param asciiBlock Stringa binaria rappresentante il blocco da 64 bit da permutare
      * @return Stringa binaria che rappresenta il blocco da 64 bit permutato
      */
-    public static String permute(String type, String asciiBlock) throws NoSuchFieldException, IllegalAccessException {
+    public String permute(String type, String asciiBlock) throws NoSuchFieldException, IllegalAccessException {
         //System.out.println("Applico una permutazione PI o PI-1");
         StringBuilder permutedBlock = new StringBuilder();
         int[] permutation = getPermutation(type);

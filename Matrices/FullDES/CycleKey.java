@@ -1,4 +1,4 @@
-package Matrices;
+package Matrices.FullDES;
 
 import Utilities.AsciiConverter;
 
@@ -12,7 +12,6 @@ public class CycleKey {
                     63, 55, 47, 39, 31, 23, 15, 7, 62, 54, 46, 38, 30, 22,
                     14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4
             };
-
     /** Array che contiene la mappa di scambio dei bit relativi al calcolo delle chiavi di ciclo */
     private static int[] cycleKeyPermutation =
             {
@@ -23,18 +22,24 @@ public class CycleKey {
             };
 
     /** Array che contiene le chiavi di rotazione ki calcolate durante l'esecuzione che serviranno per il calcolo delle chiavi di ciclo */
-    private static String[] rotatedKeys = new String[17];
-
+    private String[] rotatedKeys;
     /** Array che contiene le chiavi di ciclo Ki calcolate durante l'esecuzione */
-    private static String[] cycleKeys = new String[16];
+    private String[] cycleKeys;
+    private AsciiConverter asciiConverter;
+
+    public CycleKey() {
+        this.rotatedKeys = new String[17];
+        this.cycleKeys = new String[17];
+        this.asciiConverter = new AsciiConverter();
+    }
 
     /**
      * Calcola le 16 chiavi di ciclo, data una chiave iniziale
      * @param startingKey La chiave di partenza
      */
-    public static void computeCycleKeys(String startingKey) {
+    public void computeCycleKeys(String startingKey) {
 
-        String startingAsciiKey = AsciiConverter.stringToAscii(AsciiConverter.addPadding(startingKey));    // 64 bit
+        String startingAsciiKey = asciiConverter.stringToAscii(asciiConverter.addPadding(startingKey));    // 64 bit
         StringBuilder key56 = new StringBuilder();
         for (int anInitialKeyPermutation : initialKeyPermutation) {
             key56.append(startingAsciiKey.charAt((anInitialKeyPermutation) - 1));
@@ -86,7 +91,7 @@ public class CycleKey {
      * @param iteration L'iterazione da considerare per la rotazione
      * @return La stringa binaria ruotata
      */
-    private static String rotateKey(String asciiKey, int iteration) {
+    private String rotateKey(String asciiKey, int iteration) {
 
         String key1 = asciiKey.substring(0, 28);
         String key2 = asciiKey.substring(28, 56);
@@ -113,7 +118,7 @@ public class CycleKey {
      * Ritorna le chiavi di rotazione
      * @return Array di stringhe binarie contenente le chiavi di rotazione
      */
-    public static String[] getRotatedKeys() {
+    public String[] getRotatedKeys() {
         return rotatedKeys;
     }
 
@@ -121,7 +126,7 @@ public class CycleKey {
      * Ritorna le chiavi di ciclo
      * @return Array di stringhe binarie contenente le chiavi di ciclo
      */
-    public static String[] getCycleKeys() {
+    public String[] getCycleKeys() {
         return cycleKeys;
     }
 }

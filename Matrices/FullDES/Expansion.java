@@ -1,4 +1,4 @@
-package Matrices;
+package Matrices.FullDES;
 
 public class Expansion {
 
@@ -16,7 +16,7 @@ public class Expansion {
      * @param rightSect La stringa per la quale effettuare l'espansione
      * @return La stringa su cui è stata effettuata l'espansione
      */
-    public static String expand(String rightSect) {
+    public String expand(String rightSect) {
 
         StringBuilder expandedString = new StringBuilder();
 

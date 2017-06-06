@@ -1,11 +1,11 @@
-package Matrices;
+package Matrices.FullDES;
 
 import java.lang.reflect.Field;
 
 public class Substitution {
 
     /** Array contenente 8 stringhe binarie da 6 bit su cui effettuare le Sostituzioni */
-    private static String[] XORStringSections = new String[8];
+    private String[] XORStringSections = new String[8];
 
     /** S-Boxes */
     private static int[][] S1 =
@@ -72,12 +72,16 @@ public class Substitution {
                     {2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11}
             };
 
+    public Substitution() {
+        this.XORStringSections = new String[8];
+    }
+
     /**
      * Ritorna l'S-Box desiderato
      * @param n L'S-Box da restituire
      * @return L'S-Box desiderato
      */
-    private static int[][] getS(int n) throws NoSuchFieldException, IllegalAccessException {
+    private int[][] getS(int n) throws NoSuchFieldException, IllegalAccessException {
         String attributeName = 'S' + String.valueOf(n);
         Field f = Substitution.class.getDeclaredField(attributeName);
         f.setAccessible(true);
@@ -89,17 +93,16 @@ public class Substitution {
      * @param XORString La stringa binaria di 48 bit su cui effettuare le sostituzioni
      * @return Una stringa binaria da 32 bit risultato delle sostituzioni
      */
-    public static String substitute(String XORString) throws NoSuchFieldException, IllegalAccessException {
+    public String substitute(String XORString) throws NoSuchFieldException, IllegalAccessException {
 
         StringBuilder substituteString = new StringBuilder();
 
         // Separo la XORString (lunga 48 bit) in 8 sezioni da 6 bit ciascuna
 
         for(int i=0; i<8; i++) {
-            XORStringSections[i] = XORString.substring(6*i, 6*(i+1));
-        }
         // Applico le sostituzioni utilizzando per ogni sezione l'S-Box corrispondente
-        for(int i=0; i<8; i++) {
+
+            XORStringSections[i] = XORString.substring(6*i, 6*(i+1));
 
             String b1b6 = String.valueOf(XORStringSections[i].charAt(0)) + String.valueOf(XORStringSections[i].charAt(5));
             String middlebs = String.valueOf(XORStringSections[i].charAt(1)) + String.valueOf(XORStringSections[i].charAt(2)) +
@@ -129,7 +132,7 @@ public class Substitution {
      * @param plain La stringa binaria alla quale aggiungere il padding
      * @return La stringa binaria lunga 4 bit, compreso il padding appena effettuato
      */
-    private static String addPadding(String plain) {
+    private String addPadding(String plain) {
 
         StringBuilder sb = new StringBuilder();
             for(int i=0; i<4-plain.length(); i++) {

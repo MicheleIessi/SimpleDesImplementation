@@ -1,4 +1,4 @@
-package Matrices;
+package Matrices.FullDES;
 
 public class Permutation {
 
@@ -14,7 +14,7 @@ public class Permutation {
      * @param substituteString La stringa da permutare
      * @return La stringa permutata
      */
-    public static String permute(String substituteString) {
+    public String permute(String substituteString) {
 
         StringBuilder permutedString = new StringBuilder();
         for (int aPermutation : permutation) {

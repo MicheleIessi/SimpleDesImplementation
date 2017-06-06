@@ -9,7 +9,7 @@ public class AsciiConverter {
      * @param plainString La stringa da convertire in ASCII
      * @return La stringa convertita in ASCII
      */
-    public static String stringToAscii(String plainString) {
+    public String stringToAscii(String plainString) {
 
         StringBuilder binary = new StringBuilder();
 
@@ -27,7 +27,7 @@ public class AsciiConverter {
      * @param asciiString La stringa binaria da convertire in testo
      * @return La stringa testuale appena convertita
      */
-    public static String asciiToString(String asciiString) {
+    public String asciiToString(String asciiString) {
 
         StringBuilder plainString = new StringBuilder();
         int asciiLength = asciiString.length();
@@ -54,7 +54,7 @@ public class AsciiConverter {
      * @param key La stringa alla quale aggiungere il padding
      * @return La nuova stringa con il padding appena aggiunto
      */
-    public static String addPadding(String key) {
+    public String addPadding(String key) {
 
         StringBuilder sb = new StringBuilder(key);
         while(sb.length() < 8) {
@@ -70,7 +70,7 @@ public class AsciiConverter {
      * @param asciiChar La stringa binaria alla quale aggiungere il padding
      * @return La nuova stringa binaria con il padding appena aggiunto
      */
-    private static String addBinaryPadding(String asciiChar) {
+    private String addBinaryPadding(String asciiChar) {
         StringBuilder binaryPaddedAscii = new StringBuilder();
         while(binaryPaddedAscii.length() < (8-asciiChar.length())) {
             binaryPaddedAscii.append("0");

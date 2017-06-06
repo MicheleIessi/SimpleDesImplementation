@@ -1,15 +1,30 @@
 package DES;
 
-import Matrices.*;
+import Matrices.FullDES.*;
 import Utilities.AsciiConverter;
 
 
-public class DES {
+public class DES implements BasicDESSignature {
 
-    /** Array che contiene le 'sezioni sinistre' durante la cifratura */
-    private static String[] leftSection = new String[17];
-    /** Array che contiene le 'sezioni destre' durante la cifratura */
-    private static String[] rightSection = new String[17];
+    /** Array che contengono le 'sezioni sinistre/destre' durante la cifratura */
+    private String[] leftSection, rightSection;
+    private CycleKey cycleKey;
+    private Expansion expansion;
+    private InitialFinalPermutation initialFinalPermutation;
+    private Permutation permutation;
+    private Substitution substitution;
+    private AsciiConverter asciiConverter;
+
+    public DES() {
+        this.leftSection = new String[17];
+        this.rightSection = new String[17];
+        this.cycleKey = new CycleKey();
+        this.expansion = new Expansion();
+        this.initialFinalPermutation = new InitialFinalPermutation();
+        this.permutation = new Permutation();
+        this.substitution = new Substitution();
+        this.asciiConverter = new AsciiConverter();
+    }
 
     /**
      * Effettua la cifratura del messaggio utilizzando la chiave
@@ -17,8 +32,8 @@ public class DES {
      * @param key La chiave con cui cifrare il messaggio
      * @return Il messaggio cifrato
      */
-    public static String encrypt(String plainText, String key) throws NoSuchFieldException, IllegalAccessException {
-        return encryptDecrypt(plainText, key, "encrypt");
+    public String encrypt(String plainText, String key) throws NoSuchFieldException, IllegalAccessException {
+        return this.encryptDecrypt(plainText, key, "encrypt");
     }
 
     /**
@@ -27,8 +42,8 @@ public class DES {
      * @param key La chiave con cui decifrare il messaggio
      * @return Il messaggio decifrato
      */
-    public static String decrypt(String cipheredText, String key) throws NoSuchFieldException, IllegalAccessException {
-        return encryptDecrypt(cipheredText, key, "decrypt");
+    public String decrypt(String cipheredText, String key) throws NoSuchFieldException, IllegalAccessException {
+        return this.encryptDecrypt(cipheredText, key, "decrypt");
     }
 
     /**
@@ -39,7 +54,7 @@ public class DES {
      * @param decision L'azione da compiere (encrypt/decrypt)
      * @return Il messaggio cifrato
      */
-    private static String encryptDecrypt(String plainText, String key, String decision) throws NoSuchFieldException, IllegalAccessException {
+    public String encryptDecrypt(String plainText, String key, String decision) throws NoSuchFieldException, IllegalAccessException {
 
         if(key.length() > 8) {
             System.err.println("Errore, la chiave è più lunga di 8 caratteri");
@@ -62,13 +77,13 @@ public class DES {
             String block = plainText.substring(8*i, 8*(i+1));
 
             // Calcolo le chiavi di ciclo per il blocco in esame
-            CycleKey.computeCycleKeys(key);
+            cycleKey.computeCycleKeys(key);
 
             // Converto il blocco in 64 bit
-            String asciiBlock = AsciiConverter.stringToAscii(block);
+            String asciiBlock = asciiConverter.stringToAscii(block);
 
             // Applico la permutazione PiGreco al blocco
-            String permutedBlock = InitialFinalPermutation.permute("initial", asciiBlock);
+            String permutedBlock = initialFinalPermutation.permute("initial", asciiBlock);
 
             // Divido il blocco permutato in due sezioni destra e sinistra
             leftSection[0] = permutedBlock.substring(0,permutedBlock.length()/2);
@@ -78,22 +93,22 @@ public class DES {
             for(int j=0; j<16; j++) {
 
                 // Espando la parte destra Client 48 bit tramite la matrice E
-                String expandedRight = Expansion.expand(rightSection[j]);
+                String expandedRight = expansion.expand(rightSection[j]);
                 String XORString = "";
 
                 // Se voglio effettuare una encryption, allora prendo le chiavi di ciclo nell'ordine 1->16, altrimenti le prendo nell'ordine contrario
                 if(decision.equals("encrypt")) {
-                    XORString = XOR(expandedRight, CycleKey.getCycleKeys()[j]);
+                    XORString = XOR(expandedRight, cycleKey.getCycleKeys()[j]);
                 }
                 else if(decision.equals("decrypt")) {
-                    XORString = XOR(expandedRight, CycleKey.getCycleKeys()[15-j]);
+                    XORString = XOR(expandedRight, cycleKey.getCycleKeys()[15-j]);
                 }
 
                 // Effettuo la sostituzione S usando gli S-Boxes, ricavando 32 bit
-                String substituteString = Substitution.substitute(XORString);
+                String substituteString = substitution.substitute(XORString);
 
                 // Effettuo la permutazione
-                String permutedString = Permutation.permute(substituteString);
+                String permutedString = permutation.permute(substituteString);
 
                 // Scrivo i valori per Ri e Li
                 rightSection[j+1] = XOR(leftSection[j], permutedString);
@@ -104,10 +119,10 @@ public class DES {
             String finalString = rightSection[16] + leftSection[16];
 
             // Applico la permutazione PiGreco^-1
-            String repermutedBlock = InitialFinalPermutation.permute("final", finalString);
+            String repermutedBlock = initialFinalPermutation.permute("final", finalString);
 
             // Il blocco ora è criptato, lo converto in testo e lo aggiungo in coda al messaggio
-            String convertedCipheredText = AsciiConverter.asciiToString(repermutedBlock);
+            String convertedCipheredText = asciiConverter.asciiToString(repermutedBlock);
             encryptedText.append(convertedCipheredText);
         }
 
@@ -120,7 +135,7 @@ public class DES {
      * @param mod Il numero di spazi vuoti da inserire
      * @return La nuova stringa con il padding appena aggiunto
      */
-    private static String addPadding(String plain, int mod) {
+    private String addPadding(String plain, int mod) {
 
         StringBuilder sb = new StringBuilder(plain);
         String zeroWidthSpace = " ";
@@ -138,7 +153,7 @@ public class DES {
      * @param key La seconda stringa binaria
      * @return Il risultato dell'OR esclusivo effettuato carattere per carattere tra le due stringhe
      */
-    private static String XOR(String expandedRight, String key) {
+    private String XOR(String expandedRight, String key) {
 
         StringBuilder XORString = new StringBuilder();
 
