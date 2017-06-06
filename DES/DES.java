@@ -77,7 +77,7 @@ public class DES {
             // Inizio con i 16 cicli caratteristici del DES
             for(int j=0; j<16; j++) {
 
-                // Espando la parte destra a 48 bit tramite la matrice E
+                // Espando la parte destra Client 48 bit tramite la matrice E
                 String expandedRight = Expansion.expand(rightSection[j]);
                 String XORString = "";
 

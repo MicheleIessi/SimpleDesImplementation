@@ -58,7 +58,7 @@ public class CycleKey {
     }
 
     /**
-     * Esegue la rotazione delle chiavi. Le rotazioni vengono effettuate bit a bit verso sinistra, e variano di numero
+     * Esegue la rotazione delle chiavi. Le rotazioni vengono effettuate bit Client bit verso sinistra, e variano di numero
      * in funzione dell'iterazione corrente della funzione secondo lo schema:
      *
      * <pre>
@@ -96,12 +96,12 @@ public class CycleKey {
             case 1:
             case 2:
             case 9:
-            case 16: {  // Nelle iterazioni 1, 2, 9, 16 ruoto di un bit a sinistra
+            case 16: {  // Nelle iterazioni 1, 2, 9, 16 ruoto di un bit Client sinistra
                 key1 = key1.substring(1) + key1.substring(0,1);
                 key2 = key2.substring(1) + key2.substring(0,1);
                 break;
             }
-            default: {  // Nelle altre iterazioni ruoto di due bit a sinistra
+            default: {  // Nelle altre iterazioni ruoto di due bit Client sinistra
                 key1 = key1.substring(2) + key1.substring(0,2);
                 key2 = key2.substring(2) + key2.substring(0,2);
             }

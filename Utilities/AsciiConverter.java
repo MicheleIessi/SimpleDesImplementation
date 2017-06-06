@@ -5,7 +5,7 @@ public class AsciiConverter {
 
     /**
      * Converte una stringa in una stringa binaria. I singoli caratteri vengono convertiti in decimale, in seguito
-     * in binario e infine viene loro aggiunto un padding per renderli di lunghezza pari a 8 bit
+     * in binario e infine viene loro aggiunto un padding per renderli di lunghezza pari Client 8 bit
      * @param plainString La stringa da convertire in ASCII
      * @return La stringa convertita in ASCII
      */

@@ -5,8 +5,8 @@ public class Main {
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
 
-        String message = "ciao Michele";
-        String key = "ciao123";
+        String message = "ciao Gaetano";
+        String key = "ciao1234";
 
         String encryptedString = DES.encrypt(message, key);
         System.out.println("messaggio criptato: " + encryptedString);
