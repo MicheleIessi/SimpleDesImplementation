@@ -1,6 +1,6 @@
 # SimpleDesImplementation
 
-##Introduction
+## Introduction
 
 A simple Java implementation for the DES/TDES encryption algorithm (ECB mode). 
 Done for a mini-project for the course "Combinatorics and Cryptography" for University of L'Aquila.
@@ -14,7 +14,7 @@ and operates in three rounds, as for [2].
 Javadoc (partial) and comments are in Italian.
 
 
-##References
+## References
 * [1] Eli Biham, Adi Shamir: Differential Cryptanalysis of DES-like Cryptosystems. CRYPTO 1990: 2-21
 * [2] Eli Biham: Tutorial on Differenetial Cryptanalysis, 2005
 * [3] Wade Trappe, Lawrence C. Washington: Introduction to Cryptography with Coding Theor, Second Edition,
