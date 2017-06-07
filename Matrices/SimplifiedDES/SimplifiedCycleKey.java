@@ -18,7 +18,7 @@ public class SimplifiedCycleKey {
     public void computeCycleKeys(String key) {
 
         for(int i=0; i<ITERATIONS; i++) {
-            cycleKeys[i] = key.substring(i+1) + key.substring(0, i+1);
+            cycleKeys[i] = key.substring(i) + key.substring(0, i);
         }
     }
 

@@ -1,6 +1,8 @@
 package Matrices.SimplifiedDES;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Michele Iessi on 06/06/17.
@@ -9,7 +11,6 @@ import java.lang.reflect.Field;
 public class SimplifiedSubstitution {
 
     private String[] XORStringSections;
-
     private static int[][] S1 =
             {
                     {5, 2, 1, 6, 3, 4, 7, 0},
@@ -23,19 +24,17 @@ public class SimplifiedSubstitution {
             };
 
 
-
-    public SimplifiedSubstitution() {
+    public SimplifiedSubstitution() throws NoSuchFieldException, IllegalAccessException {
         this.XORStringSections = new String[3];
     }
 
     /**
-     *
      * @param n
      * @return int[][]
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    private int[][] getS(int n) throws NoSuchFieldException, IllegalAccessException {
+    public int[][] getS(int n) throws NoSuchFieldException, IllegalAccessException {
         String attributeName = 'S' + String.valueOf(n);
         Field f = SimplifiedSubstitution.class.getDeclaredField(attributeName);
         f.setAccessible(true);
@@ -47,9 +46,9 @@ public class SimplifiedSubstitution {
         StringBuilder substituteString = new StringBuilder();
 
         // Divido in 2 blocchi da 4 bit
-        for(int i=0; i<2; i++) {
+        for (int i = 0; i < 2; i++) {
 
-            XORStringSections[i] = XORString.substring(4*i,4*(i+1));
+            XORStringSections[i] = XORString.substring(4 * i, 4 * (i + 1));
 
             String b1 = String.valueOf(XORStringSections[i].charAt(0));
             String otherBits = String.valueOf(XORStringSections[i].charAt(1)) + String.valueOf(XORStringSections[i].charAt(2)) + String.valueOf(XORStringSections[i].charAt(3));
@@ -57,7 +56,7 @@ public class SimplifiedSubstitution {
             int row = Integer.parseInt(b1, 2);
             int column = Integer.parseInt(otherBits, 2);
 
-            int value = getS(i+1)[row][column];
+            int value = getS(i + 1)[row][column];
 
             // Aggiungo un padding per rendere la stringa lunga 3 caratteri, se necessario
             String valueString = addPadding(Integer.toBinaryString(value));
@@ -72,20 +71,15 @@ public class SimplifiedSubstitution {
     private String addPadding(String plain) {
 
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<3-plain.length(); i++) {
+        for (int i = 0; i < 3 - plain.length(); i++) {
             sb.append("0");
         }
         sb.append(plain);
         return sb.toString();
     }
 
+
 }
-
-
-
-
-
-
 
 
 

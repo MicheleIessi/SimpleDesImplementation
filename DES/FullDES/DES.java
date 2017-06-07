@@ -1,6 +1,7 @@
-package DES;
+package DES.FullDES;
 
 import Matrices.FullDES.*;
+import DES.BasicDESSignature;
 import Utilities.AsciiConverter;
 
 
@@ -14,10 +15,12 @@ public class DES implements BasicDESSignature {
     private Permutation permutation;
     private Substitution substitution;
     private AsciiConverter asciiConverter;
+    private String key;
 
-    public DES() {
+    public DES(String key) {
         this.leftSection = new String[17];
         this.rightSection = new String[17];
+        this.key = key;
         this.cycleKey = new CycleKey();
         this.expansion = new Expansion();
         this.initialFinalPermutation = new InitialFinalPermutation();
@@ -29,20 +32,20 @@ public class DES implements BasicDESSignature {
     /**
      * Effettua la cifratura del messaggio utilizzando la chiave
      * @param plainText Il messaggio (in chiaro) da cifrare
-     * @param key La chiave con cui cifrare il messaggio
      * @return Il messaggio cifrato
      */
-    public String encrypt(String plainText, String key) throws NoSuchFieldException, IllegalAccessException {
+    @Override
+    public String encrypt(String plainText) throws NoSuchFieldException, IllegalAccessException {
         return this.encryptDecrypt(plainText, key, "encrypt");
     }
 
     /**
      * Effettua la decifratura del messaggio utilizzando la chiave
      * @param cipheredText Il messaggio (criptato) da decifrare
-     * @param key La chiave con cui decifrare il messaggio
      * @return Il messaggio decifrato
      */
-    public String decrypt(String cipheredText, String key) throws NoSuchFieldException, IllegalAccessException {
+    @Override
+    public String decrypt(String cipheredText) throws NoSuchFieldException, IllegalAccessException {
         return this.encryptDecrypt(cipheredText, key, "decrypt");
     }
 
@@ -54,6 +57,7 @@ public class DES implements BasicDESSignature {
      * @param decision L'azione da compiere (encrypt/decrypt)
      * @return Il messaggio cifrato
      */
+    @Override
     public String encryptDecrypt(String plainText, String key, String decision) throws NoSuchFieldException, IllegalAccessException {
 
         if(key.length() > 8) {

@@ -1,5 +1,6 @@
-package DES;
+package DES.SimplifiedDES;
 
+import DES.BasicDESSignature;
 import Matrices.SimplifiedDES.SimplifiedCycleKey;
 import Matrices.SimplifiedDES.SimplifiedExpansion;
 import Matrices.SimplifiedDES.SimplifiedSubstitution;
@@ -17,13 +18,14 @@ public class SimplifiedDes implements BasicDESSignature {
     private AsciiConverter asciiConverter;
     private String[] leftSection;
     private String[] rightSection;
+    private String key;
     private int ITERATIONS;
 
-    public SimplifiedDes(int iterations) {
+    public SimplifiedDes(int iterations, String key) throws NoSuchFieldException, IllegalAccessException {
 
         this.ITERATIONS = iterations;
         this.asciiConverter = new AsciiConverter();
-
+        this.key = key;
         this.simplifiedExpansion = new SimplifiedExpansion();
         this.simplifiedSubstitution = new SimplifiedSubstitution();
         this.simplifiedCycleKey = new SimplifiedCycleKey(ITERATIONS);
@@ -34,24 +36,31 @@ public class SimplifiedDes implements BasicDESSignature {
     /**
      * Effettua la cifratura del messaggio utilizzando la chiave
      * @param plainText Il messaggio (in chiaro) da cifrare
-     * @param key La chiave con cui cifrare il messaggio
      * @return Il messaggio cifrato
      */
     @Override
-    public String encrypt(String plainText, String key) throws NoSuchFieldException, IllegalAccessException {
+    public String encrypt(String plainText) throws NoSuchFieldException, IllegalAccessException {
         return this.encryptDecrypt(plainText, key, "encrypt");
     }
 
     /**
      * Effettua la decifratura del messaggio utilizzando la chiave
      * @param cipheredText Il messaggio (criptato) da decifrare
-     * @param key La chiave con cui decifrare il messaggio
      * @return Il messaggio decifrato
      */
     @Override
-    public String decrypt(String cipheredText, String key) throws NoSuchFieldException, IllegalAccessException {
+    public String decrypt(String cipheredText) throws NoSuchFieldException, IllegalAccessException {
         return this.encryptDecrypt(cipheredText, key, "decrypt");
     }
+
+    public String encrypt12Bits(String plainText) throws NoSuchFieldException, IllegalAccessException {
+        return this.encryptDecrypt12Bits(plainText, key, "encrypt");
+    }
+
+    public String decrypt12Bits(String cipheredText) throws NoSuchFieldException, IllegalAccessException {
+        return this.encryptDecrypt12Bits(cipheredText, key, "decrypt");
+    }
+
 
     /**
      * Cifra o decifra il messaggio passato come parametro con la chiave desiderata
@@ -99,11 +108,11 @@ public class SimplifiedDes implements BasicDESSignature {
 
                 if(decision.equals("encrypt")) {
                     XORString = XOR(expandedRight, simplifiedCycleKey.getCycleKeys()[j]);
-                    System.out.println("encrypt con chiave " + simplifiedCycleKey.getCycleKeys()[j]);
+                    //System.out.println("encrypt con chiave " + simplifiedCycleKey.getCycleKeys()[j]);
                 }
                 else if(decision.equals("decrypt")) {
                     XORString = XOR(expandedRight, simplifiedCycleKey.getCycleKeys()[ITERATIONS-j-1]);
-                    System.out.println("decrypt con chiave " + simplifiedCycleKey.getCycleKeys()[ITERATIONS-j-1]);
+                    //System.out.println("decrypt con chiave " + simplifiedCycleKey.getCycleKeys()[ITERATIONS-j-1]);
                 }
                 String substituteString = simplifiedSubstitution.substitute(XORString);
 
@@ -157,5 +166,46 @@ public class SimplifiedDes implements BasicDESSignature {
         return XORString.toString();
     }
 
+    /**
+     * Metodo usato per la crittoanalisi differenziale. Si assume che l'input sia una stringa binaria di 12 bit
+     * @param plaintext Stringa binaria di 12 bit
+     * @param key Chiave
+     * @param decision cifrare/decifrare
+     * @return Stringa cifrata/decifrata
+     */
+    public String encryptDecrypt12Bits(String plaintext, String key, String decision) throws NoSuchFieldException, IllegalAccessException {
 
+        StringBuilder encryptedAsciiText = new StringBuilder();
+        simplifiedCycleKey.computeCycleKeys(key);
+
+        leftSection[0] = plaintext.substring(0,6);
+        rightSection[0] = plaintext.substring(6, 12);
+
+        for(int j=0; j<ITERATIONS; j++) {
+
+            String expandedRight = simplifiedExpansion.expand(rightSection[j]);
+
+            String XORString = "";
+
+            if(decision.equals("encrypt")) {
+                XORString = XOR(expandedRight, simplifiedCycleKey.getCycleKeys()[j]);
+            }
+            else if(decision.equals("decrypt")) {
+                XORString = XOR(expandedRight, simplifiedCycleKey.getCycleKeys()[ITERATIONS-j-1]);
+            }
+            String substituteString = simplifiedSubstitution.substitute(XORString);
+
+            rightSection[j+1] = XOR(leftSection[j], substituteString);
+            leftSection[j+1] = rightSection[j];
+
+        }
+
+        String finalString = leftSection[ITERATIONS] + rightSection[ITERATIONS];
+
+        //System.out.println(finalString);
+        encryptedAsciiText.append(finalString);
+
+        return encryptedAsciiText.toString();
+
+    }
 }
